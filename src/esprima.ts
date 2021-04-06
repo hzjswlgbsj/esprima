@@ -28,6 +28,7 @@ import { Parser } from './parser';
 import { Tokenizer } from './tokenizer';
 
 export function parse(code: string, options, delegate) {
+    console.log('开始执行parse', code, options, delegate);
     let commentHandler: CommentHandler | null = null;
     const proxyDelegate = (node, metadata) => {
         if (delegate) {
@@ -59,8 +60,10 @@ export function parse(code: string, options, delegate) {
     let parser: Parser;
     if (options && typeof options.jsx === 'boolean' && options.jsx) {
         parser = new JSXParser(code, options, parserDelegate);
+        console.log('开始实例化JSXParser', code, options, parserDelegate);
     } else {
         parser = new Parser(code, options, parserDelegate);
+        console.log('开始实例化Parser', code, options, parserDelegate);
     }
 
     const program = isModule ? parser.parseModule() : parser.parseScript();
@@ -92,6 +95,7 @@ export function parseScript(code: string, options, delegate) {
 }
 
 export function tokenize(code: string, options, delegate) {
+    console.log('开始执行tokenize', code, options, delegate);
     const tokenizer = new Tokenizer(code, options);
 
     const tokens: any = [];

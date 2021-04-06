@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html style="height: 100%" lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>esprima</title>
+    <script src="dist/esprima.js"></script>
+  </head>
+  <body style="height: 100%">
+    <h3>打开控制台查看打印</h3>
+    <script>
+        var code = 'var a = 1;var b = a + 1'
+        console.log('esprima', esprima)
+        var tokens = esprima.tokenize(code)
+        var ast = esprima.parse(code)
+        console.log('得到tokens: ', tokens)
+        console.log('得到ast: ', ast)
+    </script>
+  </body>
+</html>

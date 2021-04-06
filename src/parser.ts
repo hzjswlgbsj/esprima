@@ -82,6 +82,7 @@ export class Parser {
     lastMarker: Marker;
 
     constructor(code: string, options: any = {}, delegate) {
+        console.log('开始执行解析器构造函数', code, options, delegate);
         this.config = {
             range: (typeof options.range === 'boolean') && options.range,
             loc: (typeof options.loc === 'boolean') && options.loc,
@@ -99,6 +100,7 @@ export class Parser {
         this.errorHandler = new ErrorHandler();
         this.errorHandler.tolerant = this.config.tolerant;
         this.scanner = new Scanner(code, this.errorHandler);
+        console.log('开始实例化代码扫描器：', this.scanner)
         this.scanner.trackComment = this.config.comment;
 
         this.operatorPrecedence = {
@@ -356,6 +358,7 @@ export class Parser {
             this.tokens.push(this.convertToken(next));
         }
 
+        console.log('得到token', token)
         return token;
     }
 
@@ -1842,6 +1845,7 @@ export class Parser {
     // https://tc39.github.io/ecma262/#sec-block
 
     parseStatementListItem(): Node.StatementListItem {
+        console.log('开始解析语句列表', this.lookahead);
         let statement: Node.StatementListItem;
         this.context.isAssignmentTarget = true;
         this.context.isBindingElement = true;
@@ -2735,6 +2739,7 @@ export class Parser {
 
     parseStatement(): Node.Statement {
         let statement: Node.Statement;
+        console.log('开始解析表达式', this.lookahead);
         switch (this.lookahead.type) {
             case Token.BooleanLiteral:
             case Token.NullLiteral:
@@ -3100,6 +3105,7 @@ export class Parser {
 
     parseDirective(): Node.Directive | Node.ExpressionStatement {
         const token = this.lookahead;
+        console.log('开始解析指令，此时token为', token)
 
         const node = this.createNode();
         const expr = this.parseExpression();
@@ -3140,7 +3146,6 @@ export class Parser {
                 }
             }
         }
-
         return body;
     }
 
@@ -3428,6 +3433,7 @@ export class Parser {
     // https://tc39.github.io/ecma262/#sec-modules
 
     parseModule(): Node.Module {
+        console.log('开始执行parseModule');
         this.context.strict = true;
         this.context.isModule = true;
         this.scanner.isModule = true;
@@ -3440,11 +3446,15 @@ export class Parser {
     }
 
     parseScript(): Node.Script {
+        console.log('开始执行parseScript');
         const node = this.createNode();
-        const body = this.parseDirectivePrologues();
+        console.log('创建 ast 的node', node);
+        const body = this.parseDirectivePrologues(); // 如果有非普通代码字符串（token.type = StringLiteral为普通代码）在此解析
+        console.log('解析指令序言结果', body);
         while (this.lookahead.type !== Token.EOF) {
             body.push(this.parseStatementListItem());
         }
+        console.log('得到最终解析结果', body);
         return this.finalize(node, new Node.Script(body));
     }
 
